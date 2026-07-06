@@ -80,7 +80,10 @@ if (typeof lucide !== 'undefined') {
   lucide.createIcons();
 }
 
-/* ── Redirection CF7 après envoi ── */
+/* ── Redirection CF7 après envoi réussi uniquement ──
+   En cas d'échec d'envoi (wpcf7mailfailed), on ne redirige pas : le message
+   d'erreur natif de CF7 s'affiche sur la page, pour que la personne sache
+   que son message n'est pas parti (sinon la redirection masquait l'échec). */
 function tplvCf7Redirect(event) {
   const id = event.target.id;
   let type = 'contact';
@@ -88,5 +91,4 @@ function tplvCf7Redirect(event) {
   else if (id === 'form-apa')  type = 'apa';
   window.location.href = '/confirmation/?type=' + type;
 }
-document.addEventListener('wpcf7mailsent',   tplvCf7Redirect);
-document.addEventListener('wpcf7mailfailed', tplvCf7Redirect);
+document.addEventListener('wpcf7mailsent', tplvCf7Redirect);
