@@ -13,77 +13,74 @@
   <div class="section">
     <div class="container">
 
-      <div class="section-header fade-in">
-        <span class="eyebrow eyebrow--magenta">Partenaires principaux</span>
-        <h2 class="section-title">Ils s'engagent à nos côtés</h2>
-        <p class="section-sub" style="font-style:italic">Liste des partenaires à compléter avec les informations validées par l'association.</p>
-      </div>
-      <div class="partners-main">
-        <div class="partner-logo fade-in">
-          <div class="partner-logo-icon"><i data-lucide="landmark"></i></div>
-          Caisse d'Épargne<br>Bretagne Pays de Loire
-        </div>
-        <div class="partner-logo fade-in">
-          <div class="partner-logo-icon"><i data-lucide="factory"></i></div>
-          Groupe Roullier
-        </div>
-        <div class="partner-logo fade-in">
-          <div class="partner-logo-icon"><i data-lucide="shield"></i></div>
-          MAIF
-        </div>
-        <div class="partner-logo fade-in">
-          <div class="partner-logo-icon"><i data-lucide="building-2"></i></div>
-          Région Bretagne
-        </div>
-        <div class="partner-logo fade-in">
-          <div class="partner-logo-icon"><i data-lucide="clipboard-list"></i></div>
-          Département<br>Ille-et-Vilaine
-        </div>
-        <div class="partner-logo fade-in">
-          <div class="partner-logo-icon"><i data-lucide="building"></i></div>
-          Ville de Janzé
-        </div>
-      </div>
+      <?php
+      $parrains = new WP_Query( [
+          'post_type'      => 'partenaire',
+          'posts_per_page' => -1,
+          'orderby'        => 'menu_order',
+          'order'          => 'ASC',
+          'meta_key'       => '_partenaire_type',
+          'meta_value'     => 'parrain',
+      ] );
+      ?>
+      <?php $a_des_parrains = $parrains->have_posts(); ?>
+      <?php if ( $a_des_parrains ) : ?>
+          <div class="section-header fade-in">
+              <span class="eyebrow eyebrow--magenta">Édition <?php echo esc_html( tplv_opt( 'derniere_annee', date( 'Y' ) ) ); ?></span>
+              <h2 class="section-title">Parrains &amp; marraines de l'édition</h2>
+          </div>
+          <div class="partners-main">
+              <?php while ( $parrains->have_posts() ) : $parrains->the_post();
+                  $logo_id  = (int) get_post_meta( get_the_ID(), '_partenaire_logo_id', true );
+                  $logo_url = $logo_id ? wp_get_attachment_image_url( $logo_id, 'medium' ) : '';
+                  $lien     = get_post_meta( get_the_ID(), '_partenaire_lien', true );
+                  ?>
+                  <?php if ( $lien ) : ?><a href="<?php echo esc_url( $lien ); ?>" target="_blank" rel="noopener" class="partner-logo fade-in"><?php else : ?><div class="partner-logo fade-in"><?php endif; ?>
+                      <?php if ( $logo_url ) : ?>
+                          <img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>" loading="lazy">
+                      <?php else : ?>
+                          <?php the_title(); ?>
+                      <?php endif; ?>
+                  <?php echo $lien ? '</a>' : '</div>'; ?>
+              <?php endwhile; wp_reset_postdata(); ?>
+          </div>
 
-      <div class="section-divider"></div>
+          <div class="section-divider"></div>
+      <?php endif; ?>
 
       <div class="section-header fade-in">
-        <span class="eyebrow eyebrow--magenta">Partenaires associés</span>
-        <h2 class="section-title section-title--sm">Entreprises et associations locales</h2>
+        <span class="eyebrow eyebrow--magenta">Nos partenaires</span>
+        <h2 class="section-title<?php echo $a_des_parrains ? ' section-title--sm' : ''; ?>">Ils s'engagent à nos côtés</h2>
       </div>
       <div class="partners-assoc">
-        <div class="partner-logo partner-logo--sm fade-in">
-          <div class="partner-logo-icon"><i data-lucide="shopping-bag"></i></div>
-          Boulangerie Lelièvre
-        </div>
-        <div class="partner-logo partner-logo--sm fade-in">
-          <div class="partner-logo-icon"><i data-lucide="car"></i></div>
-          Auto Boulanger
-        </div>
-        <div class="partner-logo partner-logo--sm fade-in">
-          <div class="partner-logo-icon"><i data-lucide="home"></i></div>
-          Janzé Habitat
-        </div>
-        <div class="partner-logo partner-logo--sm fade-in">
-          <div class="partner-logo-icon"><i data-lucide="pill"></i></div>
-          Pharmacie de la Place
-        </div>
-        <div class="partner-logo partner-logo--sm fade-in">
-          <div class="partner-logo-icon"><i data-lucide="radio"></i></div>
-          Radio Janzé
-        </div>
-        <div class="partner-logo partner-logo--sm fade-in">
-          <div class="partner-logo-icon"><i data-lucide="trophy"></i></div>
-          AS Janzé Football
-        </div>
-        <div class="partner-logo partner-logo--sm fade-in">
-          <div class="partner-logo-icon"><i data-lucide="leaf"></i></div>
-          Partenaire à confirmer
-        </div>
-        <div class="partner-logo partner-logo--sm fade-in">
-          <div class="partner-logo-icon"><i data-lucide="printer"></i></div>
-          Imprimerie Grolleau
-        </div>
+        <?php
+        $partenaires = new WP_Query( [
+            'post_type'      => 'partenaire',
+            'posts_per_page' => -1,
+            'orderby'        => 'menu_order',
+            'order'          => 'ASC',
+            'meta_key'       => '_partenaire_type',
+            'meta_value'     => 'partenaire',
+        ] );
+
+        if ( $partenaires->have_posts() ) :
+            while ( $partenaires->have_posts() ) : $partenaires->the_post();
+                $logo_id  = (int) get_post_meta( get_the_ID(), '_partenaire_logo_id', true );
+                $logo_url = $logo_id ? wp_get_attachment_image_url( $logo_id, 'medium' ) : '';
+                $lien     = get_post_meta( get_the_ID(), '_partenaire_lien', true );
+                ?>
+                <?php if ( $lien ) : ?><a href="<?php echo esc_url( $lien ); ?>" target="_blank" rel="noopener" class="partner-logo partner-logo--sm fade-in"><?php else : ?><div class="partner-logo partner-logo--sm fade-in"><?php endif; ?>
+                    <?php if ( $logo_url ) : ?>
+                        <img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>" loading="lazy">
+                    <?php else : ?>
+                        <?php the_title(); ?>
+                    <?php endif; ?>
+                <?php echo $lien ? '</a>' : '</div>'; ?>
+            <?php endwhile;
+            wp_reset_postdata();
+        else : ?>
+            <p class="section-sub" style="font-style:italic">Les partenaires seront bientôt affichés ici.</p>
+        <?php endif; ?>
       </div>
 
       <div class="partner-cta fade-in">

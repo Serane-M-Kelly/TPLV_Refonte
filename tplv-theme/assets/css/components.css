@@ -524,6 +524,8 @@ textarea.form-control      { min-height: 120px; resize: vertical; }
 .partners-assoc { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 .partner-logo {
   aspect-ratio: 2 / 1;
+  min-width: 0;
+  overflow: hidden;
   border-radius: var(--radius-card);
   border: 1px solid var(--border);
   background: #fff;
@@ -536,6 +538,7 @@ textarea.form-control      { min-height: 120px; resize: vertical; }
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 13px;
+  line-height: 1.3;
   color: var(--text-muted);
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
   text-align: center;
@@ -543,8 +546,8 @@ textarea.form-control      { min-height: 120px; resize: vertical; }
 }
 .partner-logo:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: var(--magenta-soft); }
 .partner-logo--sm   { font-size: 12px; }
-/* Slot icône optionnel au-dessus du nom — remplacé par <img> en Phase 2 */
-.partner-logo-icon  { font-size: 22px; line-height: 1; }
+.partner-logo img     { max-width: 100%; max-height: 56px; object-fit: contain; }
+.partner-logo--sm img { max-height: 36px; }
 
 .section-divider    { height: 1px; background: var(--border); margin: 48px 0; }
 

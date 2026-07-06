@@ -18,6 +18,7 @@ require_once get_template_directory() . '/inc/nav-walkers.php';
 require_once get_template_directory() . '/inc/cpt-actualites.php';
 require_once get_template_directory() . '/inc/cpt-evenements.php';
 require_once get_template_directory() . '/inc/cpt-documents.php';
+require_once get_template_directory() . '/inc/cpt-partenaires.php';
 require_once get_template_directory() . '/inc/cf7-helpers.php';
 require_once get_template_directory() . '/inc/apa.php';
 require_once get_template_directory() . '/inc/helloasso.php';
