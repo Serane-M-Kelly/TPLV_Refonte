@@ -1,0 +1,162 @@
+/* ── SITE HEADER ── */
+#site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow 0.2s ease;
+}
+#site-header.scrolled { box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08); }
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 88px;
+  gap: 16px;
+}
+
+/* ── LOGO ── */
+.header-logo { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.header-logo img { height: 64px; width: auto; }
+
+.logo-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--magenta), var(--navy));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 13px;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.logo-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--navy);
+  line-height: 1.2;
+}
+.logo-text span {
+  display: block;
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ── NAV DESKTOP ── */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  justify-content: center;
+}
+.header-nav a {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--navy);
+  padding: 8px 10px;
+  border-radius: 6px;
+  position: relative;
+  white-space: nowrap;
+  transition: color var(--transition), background var(--transition);
+}
+.header-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 10px;
+  right: 10px;
+  height: 2px;
+  background: var(--magenta);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+.header-nav a:hover::after  { transform: scaleX(1); }
+.header-nav a:hover         { color: var(--magenta); }
+
+/* Lien de la page courante (ajouté par le walker PHP) */
+.nav-link--current { color: var(--magenta) !important; }
+.nav-link--current::after { transform: scaleX(1); }
+
+/* Lien actif in-page (section visible, géré par JS via classList) */
+.nav-link--active { color: var(--magenta) !important; }
+.nav-link--active::after { transform: scaleX(1); }
+
+/* ── CTA HEADER ── */
+.header-cta { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.header-cta .btn { padding: 10px 20px; font-size: 13px; }
+
+/* ── HAMBURGER ── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+}
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--navy);
+  border-radius: 2px;
+  transition: transform 0.25s, opacity 0.25s;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── OVERLAY MOBILE ── */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 88px 0 0;
+  background: var(--navy);
+  z-index: 99;
+  flex-direction: column;
+  padding: 32px 24px;
+  gap: 4px;
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity 0.25s, transform 0.25s;
+}
+.mobile-overlay.open { display: flex; opacity: 1; transform: none; }
+
+.mobile-overlay a {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.9);
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: color var(--transition);
+}
+.mobile-overlay a:hover           { color: var(--sky); }
+.mobile-overlay .btn-primary      { margin-top: 24px; justify-content: center; font-size: 15px; padding: 16px; }
+
+/* ── RESPONSIVE HEADER ── */
+@media (max-width: 1024px) {
+  .header-nav  { display: none; }
+  .hamburger   { display: flex; }
+}
+@media (max-width: 768px) {
+  .header-cta .btn-ghost-white { display: none; }
+}
+@media (max-width: 480px) {
+  /* Cache le sous-titre "Association de Janzé" pour libérer de la place */
+  .logo-text span { display: none; }
+  /* Cache le bouton "Faire un don" du header — accessible via le menu hamburger.
+     Même réduit, le bouton + hamburger + logo dépasse les 296px disponibles à 344px. */
+  .header-cta .btn { display: none; }
+}

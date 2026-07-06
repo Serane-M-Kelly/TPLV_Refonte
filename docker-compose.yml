@@ -1,0 +1,48 @@
+name: tplv
+
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: tplv
+      MYSQL_USER: tplv_user
+      MYSQL_PASSWORD: tplv_pass
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+
+  wordpress:
+    image: wordpress:latest
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: tplv
+      WORDPRESS_DB_USER: tplv_user
+      WORDPRESS_DB_PASSWORD: tplv_pass
+      WORDPRESS_DEBUG: "1"
+      WORDPRESS_DEBUG_DISPLAY: "0"
+      WORDPRESS_DEBUG_LOG: "1"
+    volumes:
+      - ./tplv-theme:/var/www/html/wp-content/themes/tplv-theme
+      - wp_plugins:/var/www/html/wp-content/plugins
+      - wp_uploads:/var/www/html/wp-content/uploads
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+
+volumes:
+  db_data:
+  wp_plugins:
+  wp_uploads:

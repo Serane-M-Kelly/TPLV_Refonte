@@ -1,0 +1,9 @@
+.env
+.DS_Store
+wp-content/uploads/
+
+
+ai-workspace/
+.claude/
+CLAUDE.md
+PROJECT_BRIEF*.md
