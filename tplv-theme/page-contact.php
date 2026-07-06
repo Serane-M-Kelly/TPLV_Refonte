@@ -20,21 +20,23 @@
             <div class="contact-info-icon"><i data-lucide="map-pin"></i></div>
             <div>
               <h3>Adresse</h3>
-              <p>Association TPLV<br>28 rue Jean-Marie Lacire · 35150 Janzé</p>
+              <p>Association TPLV<br><?php echo nl2br( esc_html( tplv_opt( 'adresse', "28 rue Jean-Marie Lacire\n35150 Janzé" ) ) ); ?></p>
             </div>
           </div>
+          <?php $tplv_email = tplv_opt( 'email', 'contact@tplv-janze.fr' ); ?>
           <div class="contact-info-item">
             <div class="contact-info-icon"><i data-lucide="mail"></i></div>
             <div>
               <h3>Email</h3>
-              <a href="mailto:contact@tplv-janze.fr">contact@tplv-janze.fr</a>
+              <a href="mailto:<?php echo esc_attr( $tplv_email ); ?>"><?php echo esc_html( $tplv_email ); ?></a>
             </div>
           </div>
+          <?php $tplv_tel = tplv_opt( 'telephone', '02 99 47 00 00' ); ?>
           <div class="contact-info-item">
             <div class="contact-info-icon"><i data-lucide="phone"></i></div>
             <div>
               <h3>Téléphone</h3>
-              <a href="tel:+33299470000">02 99 47 00 00</a><br>
+              <a href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $tplv_tel ) ); ?>"><?php echo esc_html( $tplv_tel ); ?></a><br>
               <span class="contact-hours">Du lundi au vendredi, 9h–12h</span>
             </div>
           </div>

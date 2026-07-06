@@ -39,7 +39,7 @@
         <div class="mission-card fade-in">
           <div class="mission-icon"><i data-lucide="handshake"></i></div>
           <h3>Communauté</h3>
-          <p>33 communes mobilisées, 500 bénévoles et une communauté qui grandit chaque année. TPLV, c'est Janzé qui dit non au cancer d'une seule voix.</p>
+          <p><?php echo esc_html( tplv_opt( 'nb_communes', 33 ) ); ?> communes mobilisées, <?php echo esc_html( tplv_opt( 'nb_benevoles', 500 ) ); ?> bénévoles et une communauté qui grandit chaque année. TPLV, c'est Janzé qui dit non au cancer d'une seule voix.</p>
         </div>
       </div>
     </div>
@@ -55,19 +55,19 @@
       </div>
       <div class="stats-grid">
         <div class="stat-item fade-in">
-          <div class="stat-number" data-target="500">0</div>
+          <div class="stat-number" data-target="<?php echo esc_attr( tplv_opt( 'nb_benevoles', 500 ) ); ?>">0</div>
           <div class="stat-label">Bénévoles mobilisés</div>
         </div>
         <div class="stat-item fade-in">
-          <div class="stat-number" data-target="33">0</div>
+          <div class="stat-number" data-target="<?php echo esc_attr( tplv_opt( 'nb_communes', 33 ) ); ?>">0</div>
           <div class="stat-label">Communes partenaires</div>
         </div>
         <div class="stat-item fade-in">
-          <div class="stat-number" data-target="120000" data-suffix="+">0</div>
+          <div class="stat-number" data-target="<?php echo esc_attr( tplv_opt( 'nb_participants', 120000 ) ); ?>" data-suffix="+">0</div>
           <div class="stat-label">Participants au total</div>
         </div>
         <div class="stat-item fade-in">
-          <div class="stat-number" data-target="800000" data-prefix="+" data-suffix="€">0</div>
+          <div class="stat-number" data-target="<?php echo esc_attr( tplv_opt( 'total_redistribue', 800000 ) ); ?>" data-prefix="+" data-suffix="€">0</div>
           <div class="stat-label">Reversés à la recherche</div>
         </div>
       </div>
@@ -136,7 +136,7 @@
       <div class="cta-join fade-in">
         <span class="eyebrow eyebrow--magenta">Fondée en 2004</span>
         <h2>Découvrez notre histoire</h2>
-        <p>Vingt ans de solidarité et d'engagement humain — 800 000 € reversés, 500 bénévoles, 33 communes mobilisées. Découvrez l'aventure humaine derrière TPLV.</p>
+        <p>Vingt ans de solidarité et d'engagement humain — <?php echo esc_html( number_format( (int) tplv_opt( 'total_redistribue', 800000 ), 0, '', ' ' ) ); ?> € reversés, <?php echo esc_html( tplv_opt( 'nb_benevoles', 500 ) ); ?> bénévoles, <?php echo esc_html( tplv_opt( 'nb_communes', 33 ) ); ?> communes mobilisées. Découvrez l'aventure humaine derrière TPLV.</p>
         <div class="cta-join-btns">
           <a href="<?php echo esc_url( home_url( '/histoire/' ) ); ?>" class="btn btn-primary">Notre histoire →</a>
           <a href="<?php echo esc_url( home_url( '/resultats/' ) ); ?>" class="btn btn-secondary">Résultats des éditions</a>

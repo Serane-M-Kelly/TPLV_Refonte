@@ -63,7 +63,7 @@ function tplv_inject_org_schema(): void {
         ],
         'contactPoint' => [
             '@type'       => 'ContactPoint',
-            'email'       => 'contact@tplv-janze.fr',
+            'email'       => tplv_opt( 'email', 'contact@tplv-janze.fr' ),
             'contactType' => 'customer support',
             'areaServed'  => 'FR',
         ],

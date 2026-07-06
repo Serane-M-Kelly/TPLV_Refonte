@@ -29,9 +29,11 @@
       <div class="footer-col">
         <h4>Contact</h4>
         <div class="footer-contact">
-          <p>28 rue Jean-Marie Lacire<br>35150 Janzé</p>
-          <p><a href="mailto:contact@tplv-janze.fr">contact@tplv-janze.fr</a></p>
-          <p><a href="tel:+33299470000">02 99 47 00 00</a></p>
+          <p><?php echo nl2br( esc_html( tplv_opt( 'adresse', "28 rue Jean-Marie Lacire\n35150 Janzé" ) ) ); ?></p>
+          <?php $tplv_email = tplv_opt( 'email', 'contact@tplv-janze.fr' ); ?>
+          <p><a href="mailto:<?php echo esc_attr( $tplv_email ); ?>"><?php echo esc_html( $tplv_email ); ?></a></p>
+          <?php $tplv_tel = tplv_opt( 'telephone', '02 99 47 00 00' ); ?>
+          <p><a href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $tplv_tel ) ); ?>"><?php echo esc_html( $tplv_tel ); ?></a></p>
         </div>
       </div>
       <div class="footer-col">

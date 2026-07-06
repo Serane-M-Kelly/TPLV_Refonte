@@ -173,7 +173,7 @@ function tplv_ha_get_campaigns(): array {
  */
 function tplv_ha_get_don_url(): string {
     $slug      = tplv_ha_get_setting( 'org_slug', 'tous-pour-la-vie-janze' );
-    $fallback  = "https://www.helloasso.com/associations/{$slug}/collectes";
+    $fallback  = tplv_opt( 'helloasso', "https://www.helloasso.com/associations/{$slug}/collectes" );
     $campaigns = tplv_ha_get_campaigns();
 
     foreach ( $campaigns as $c ) {

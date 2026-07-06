@@ -15,7 +15,7 @@ function tplv_enqueue_assets() {
     wp_enqueue_style( 'tplv-components', $uri . '/assets/css/components.css', ['tplv-base'],   $ver );
 
     wp_enqueue_script( 'tplv-lucide',  'https://unpkg.com/lucide@latest',        [],              null, true );
-    wp_enqueue_script( 'tplv-counter', $uri . '/assets/js/counter.js', ['tplv-lucide'], $ver,  true );
+    wp_enqueue_script( 'tplv-nombres-animes', $uri . '/assets/js/nombres-animes.js', ['tplv-lucide'], $ver,  true );
     wp_enqueue_script( 'tplv-main',    $uri . '/assets/js/main.js',    ['tplv-lucide'], $ver,  true );
 }
 add_action( 'wp_enqueue_scripts', 'tplv_enqueue_assets' );
