@@ -56,7 +56,7 @@ $img = get_the_post_thumbnail_url( get_the_ID(), 'large' );
             </div>
         <?php endif; ?>
 
-        <p><?php the_content(); ?></p>
+        <p><?php echo esc_html( get_the_excerpt() ); ?></p>
 
         <?php if ( $tarif ) : ?>
             <div class="event-price"><?php echo esc_html( 'Tarif : ' . $tarif ); ?></div>

@@ -34,7 +34,7 @@ function tplv_register_cpt_evenements() {
         'has_archive'        => 'evenements',
         'rewrite'            => [ 'slug' => 'evenements' ],
         'menu_icon'          => 'dashicons-calendar-alt',
-        'supports'           => [ 'title', 'editor', 'thumbnail' ],
+        'supports'           => [ 'title', 'editor', 'thumbnail', 'excerpt' ],
         'show_in_menu'       => true,
         'menu_position'      => 6,
     ] );

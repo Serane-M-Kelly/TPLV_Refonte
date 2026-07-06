@@ -55,10 +55,11 @@ function tplv_dashboard_cards(): array {
     $cards = [];
 
     // Raccourci de création le plus courant — actualité en priorité, sinon événement.
+    // Pointe vers le formulaire rapide (Phase Admin 7), pas l'écran WordPress complet.
     if ( post_type_exists( 'actualite' ) ) {
-        $cards[] = [ 'title' => 'Ajouter une actualité', 'desc' => 'Publier une nouvelle', 'icon' => 'dashicons-megaphone', 'url' => admin_url( 'post-new.php?post_type=actualite' ), 'blank' => false ];
+        $cards[] = [ 'title' => 'Ajouter une actualité', 'desc' => 'Publier une nouvelle', 'icon' => 'dashicons-megaphone', 'url' => admin_url( 'admin.php?page=tplv-actu-rapide' ), 'blank' => false ];
     } elseif ( post_type_exists( 'evenement' ) ) {
-        $cards[] = [ 'title' => 'Ajouter un événement', 'desc' => 'Créer un événement', 'icon' => 'dashicons-calendar-alt', 'url' => admin_url( 'post-new.php?post_type=evenement' ), 'blank' => false ];
+        $cards[] = [ 'title' => 'Ajouter un événement', 'desc' => 'Créer un événement', 'icon' => 'dashicons-calendar-alt', 'url' => admin_url( 'admin.php?page=tplv-event-rapide' ), 'blank' => false ];
     }
 
     // Voir le site public.
@@ -83,12 +84,21 @@ function tplv_dashboard_cards(): array {
 function tplv_contenu_cards(): array {
     $cards = [];
 
-    // Raccourcis de création de contenu — uniquement si le CPT existe.
+    // Actualités et Événements — formulaires rapides (Phase Admin 7), pas l'écran WordPress complet.
+    $cpt_cards_rapides = [
+        'actualite' => [ 'Ajouter une actualité', 'Publier une nouvelle', 'dashicons-megaphone',    'admin.php?page=tplv-actu-rapide' ],
+        'evenement' => [ 'Ajouter un événement',  'Créer un événement',   'dashicons-calendar-alt', 'admin.php?page=tplv-event-rapide' ],
+    ];
+    foreach ( $cpt_cards_rapides as $post_type => $c ) {
+        if ( post_type_exists( $post_type ) ) {
+            $cards[] = [ 'title' => $c[0], 'desc' => $c[1], 'icon' => $c[2], 'url' => admin_url( $c[3] ), 'blank' => false ];
+        }
+    }
+
+    // Documents et Partenaires — pas de formulaire rapide dédié, écran WordPress standard.
     $cpt_cards = [
-        'actualite'  => [ 'Ajouter une actualité', 'Publier une nouvelle',     'dashicons-megaphone' ],
-        'evenement'  => [ 'Ajouter un événement',  'Créer un événement',       'dashicons-calendar-alt' ],
-        'partenaire' => [ 'Ajouter un partenaire', 'Logo et lien partenaire',  'dashicons-groups' ],
-        'document'   => [ 'Ajouter un document',   'Mettre en ligne un PDF',   'dashicons-media-document' ],
+        'partenaire' => [ 'Ajouter un partenaire', 'Logo et lien partenaire', 'dashicons-groups' ],
+        'document'   => [ 'Ajouter un document',   'Mettre en ligne un PDF',  'dashicons-media-document' ],
     ];
     foreach ( $cpt_cards as $post_type => $c ) {
         if ( post_type_exists( $post_type ) ) {

@@ -27,3 +27,4 @@ require_once get_template_directory() . '/inc/reglages-tplv.php';
 require_once get_template_directory() . '/inc/roles-tplv.php';
 require_once get_template_directory() . '/inc/admin-tplv.php';
 require_once get_template_directory() . '/inc/simplifier-admin.php';
+require_once get_template_directory() . '/inc/formulaires-rapides.php';
