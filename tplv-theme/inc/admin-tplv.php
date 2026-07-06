@@ -35,38 +35,53 @@ function tplv_register_admin_menu(): void {
     // Premier sous-menu = renomme l'entrée dupliquée du top-level.
     add_submenu_page( 'tplv-dashboard', 'Tableau de bord TPLV', 'Tableau de bord', 'edit_posts', 'tplv-dashboard', 'tplv_render_dashboard' );
 
+    // Contenu — regroupe les raccourcis de création (CPT + formulaires).
+    add_submenu_page( 'tplv-dashboard', 'Contenu TPLV', 'Contenu', 'edit_posts', 'tplv-contenu', 'tplv_render_contenu_page' );
+
     // Réglages — administrateurs uniquement.
     add_submenu_page( 'tplv-dashboard', 'Réglages TPLV', 'Réglages TPLV', 'manage_options', 'tplv-reglages', 'tplv_render_reglages_page' );
-
-    // Raccourcis de création — uniquement si le type de contenu existe (pas de lien mort).
-    $shortcuts = [
-        'actualite'  => 'Ajouter une actualité',
-        'evenement'  => 'Ajouter un événement',
-        'partenaire' => 'Ajouter un partenaire',
-        'document'   => 'Ajouter un document',
-    ];
-    foreach ( $shortcuts as $post_type => $label ) {
-        if ( post_type_exists( $post_type ) ) {
-            add_submenu_page( 'tplv-dashboard', $label, $label, 'edit_posts', 'post-new.php?post_type=' . $post_type );
-        }
-    }
 }
 
 /* ─────────────────────────────────────────────
- * 2. Cartes du tableau de bord (raccourcis)
+ * 2. Cartes des pages d'admin (raccourcis)
  *    Chaque carte n'est ajoutée que si sa cible est disponible.
  * ───────────────────────────────────────────── */
 
+/**
+ * Cartes du Tableau de bord — vue d'ensemble minimale, les 2 raccourcis
+ * les plus utilisés. Le reste des raccourcis vit dans la page "Contenu".
+ */
 function tplv_dashboard_cards(): array {
     $cards = [];
 
-    // Raccourcis réglages — administrateurs uniquement.
+    // Raccourci de création le plus courant — actualité en priorité, sinon événement.
+    if ( post_type_exists( 'actualite' ) ) {
+        $cards[] = [ 'title' => 'Ajouter une actualité', 'desc' => 'Publier une nouvelle', 'icon' => 'dashicons-megaphone', 'url' => admin_url( 'post-new.php?post_type=actualite' ), 'blank' => false ];
+    } elseif ( post_type_exists( 'evenement' ) ) {
+        $cards[] = [ 'title' => 'Ajouter un événement', 'desc' => 'Créer un événement', 'icon' => 'dashicons-calendar-alt', 'url' => admin_url( 'post-new.php?post_type=evenement' ), 'blank' => false ];
+    }
+
+    // Voir le site public.
+    $cards[] = [ 'title' => 'Voir le site', 'desc' => 'Ouvrir le site public', 'icon' => 'dashicons-external', 'url' => home_url( '/' ), 'blank' => true ];
+
+    // Raccourcis Réglages — administrateurs uniquement, ne s'affichent pas pour un profil bénévole.
     if ( current_user_can( 'manage_options' ) ) {
         $reglages = admin_url( 'admin.php?page=tplv-reglages' );
-        $cards[] = [ 'title' => 'Modifier les chiffres clés', 'desc' => 'Bénévoles, participants, montants…', 'icon' => 'dashicons-chart-bar',  'url' => $reglages, 'blank' => false ];
-        $cards[] = [ 'title' => 'Modifier les coordonnées',   'desc' => 'Email, téléphone, adresse',         'icon' => 'dashicons-location',   'url' => $reglages, 'blank' => false ];
-        $cards[] = [ 'title' => 'Modifier le lien HelloAsso', 'desc' => 'Page de don en ligne',              'icon' => 'dashicons-money-alt',  'url' => $reglages, 'blank' => false ];
+        $cards[] = [ 'title' => 'Modifier les chiffres clés', 'desc' => 'Bénévoles, participants, montants…', 'icon' => 'dashicons-chart-bar', 'url' => $reglages, 'blank' => false ];
+        $cards[] = [ 'title' => 'Modifier les coordonnées',   'desc' => 'Email, téléphone, adresse',         'icon' => 'dashicons-location',  'url' => $reglages, 'blank' => false ];
+        $cards[] = [ 'title' => 'Modifier le lien HelloAsso', 'desc' => 'Page de don en ligne',              'icon' => 'dashicons-money-alt', 'url' => $reglages, 'blank' => false ];
     }
+
+    return $cards;
+}
+
+/**
+ * Cartes de la page "Contenu" — tous les raccourcis de création
+ * (CPT existants + formulaires CF7). Chaque carte n'apparaît que si sa
+ * cible existe réellement (pas de lien mort).
+ */
+function tplv_contenu_cards(): array {
+    $cards = [];
 
     // Raccourcis de création de contenu — uniquement si le CPT existe.
     $cpt_cards = [
@@ -82,26 +97,30 @@ function tplv_dashboard_cards(): array {
     }
 
     // Formulaires Contact Form 7 — uniquement si le plugin est actif.
+    // Rejoindra une sous-page "Formulaires" dédiée quand elle existera (Phase Admin 8).
     if ( defined( 'WPCF7_VERSION' ) ) {
         $cards[] = [ 'title' => 'Voir les formulaires', 'desc' => 'Contact, bénévoles, APA', 'icon' => 'dashicons-email', 'url' => admin_url( 'admin.php?page=wpcf7' ), 'blank' => false ];
     }
-
-    // Voir le site public.
-    $cards[] = [ 'title' => 'Voir le site', 'desc' => 'Ouvrir le site public', 'icon' => 'dashicons-external', 'url' => home_url( '/' ), 'blank' => true ];
 
     return $cards;
 }
 
 /* ─────────────────────────────────────────────
- * 3. Rendu de la page "Tableau de bord TPLV"
+ * 3. Rendu commun des pages à cartes
  * ───────────────────────────────────────────── */
 
-function tplv_render_dashboard(): void {
-    $cards = tplv_dashboard_cards();
+/**
+ * Affiche une grille de cartes avec un titre et une intro.
+ *
+ * @param string $title Titre affiché en <h1>.
+ * @param string $intro Texte d'introduction.
+ * @param array  $cards Cartes à afficher (voir tplv_dashboard_cards()).
+ */
+function tplv_render_cards_page( string $title, string $intro, array $cards ): void {
     ?>
     <div class="wrap tplv-admin">
-        <h1>Tableau de bord — Tous Pour la Vie Janzé</h1>
-        <p class="tplv-welcome">Bienvenue dans l'espace d'administration de Tous Pour la Vie Janzé. Depuis cette page, vous pouvez mettre à jour les contenus principaux du site sans toucher au code.</p>
+        <h1><?php echo esc_html( $title ); ?></h1>
+        <p class="tplv-welcome"><?php echo esc_html( $intro ); ?></p>
 
         <div class="tplv-cards">
             <?php foreach ( $cards as $card ) : ?>
@@ -121,6 +140,22 @@ function tplv_render_dashboard(): void {
     </div>
     <?php
     tplv_dashboard_styles();
+}
+
+function tplv_render_dashboard(): void {
+    tplv_render_cards_page(
+        'Tableau de bord — Tous Pour la Vie Janzé',
+        "Bienvenue dans l'espace d'administration de Tous Pour la Vie Janzé.",
+        tplv_dashboard_cards()
+    );
+}
+
+function tplv_render_contenu_page(): void {
+    tplv_render_cards_page(
+        'Contenu TPLV',
+        'Publiez une actualité, un événement, ou consultez les formulaires reçus.',
+        tplv_contenu_cards()
+    );
 }
 
 /**
