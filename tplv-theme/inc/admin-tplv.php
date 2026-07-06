@@ -38,6 +38,9 @@ function tplv_register_admin_menu(): void {
     // Contenu — regroupe les raccourcis de création (CPT + formulaires).
     add_submenu_page( 'tplv-dashboard', 'Contenu TPLV', 'Contenu', 'edit_posts', 'tplv-contenu', 'tplv_render_contenu_page' );
 
+    // Formulaires — suivi des 3 formulaires CF7 (Contact, Bénévoles, APA).
+    add_submenu_page( 'tplv-dashboard', 'Formulaires TPLV', 'Formulaires', 'edit_posts', 'tplv-formulaires', 'tplv_render_formulaires_page' );
+
     // Réglages — administrateurs + rôle Gestionnaire TPLV (capacité dédiée, jamais manage_options).
     add_submenu_page( 'tplv-dashboard', 'Réglages TPLV', 'Réglages TPLV', 'manage_tplv_settings', 'tplv-reglages', 'tplv_render_reglages_page' );
 }
@@ -106,11 +109,9 @@ function tplv_contenu_cards(): array {
         }
     }
 
-    // Formulaires Contact Form 7 — uniquement si le plugin est actif.
-    // Rejoindra une sous-page "Formulaires" dédiée quand elle existera (Phase Admin 8).
-    if ( defined( 'WPCF7_VERSION' ) ) {
-        $cards[] = [ 'title' => 'Voir les formulaires', 'desc' => 'Contact, bénévoles, APA', 'icon' => 'dashicons-email', 'url' => admin_url( 'admin.php?page=wpcf7' ), 'blank' => false ];
-    }
+    // Formulaires — toujours visible, même si CF7 n'est pas encore installé
+    // (la page affiche le statut réel, plus utile qu'un lien conditionnel).
+    $cards[] = [ 'title' => 'Voir les formulaires', 'desc' => 'Contact, bénévoles, APA', 'icon' => 'dashicons-email', 'url' => admin_url( 'admin.php?page=tplv-formulaires' ), 'blank' => false ];
 
     return $cards;
 }
