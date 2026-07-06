@@ -38,8 +38,8 @@ function tplv_register_admin_menu(): void {
     // Contenu — regroupe les raccourcis de création (CPT + formulaires).
     add_submenu_page( 'tplv-dashboard', 'Contenu TPLV', 'Contenu', 'edit_posts', 'tplv-contenu', 'tplv_render_contenu_page' );
 
-    // Réglages — administrateurs uniquement.
-    add_submenu_page( 'tplv-dashboard', 'Réglages TPLV', 'Réglages TPLV', 'manage_options', 'tplv-reglages', 'tplv_render_reglages_page' );
+    // Réglages — administrateurs + rôle Gestionnaire TPLV (capacité dédiée, jamais manage_options).
+    add_submenu_page( 'tplv-dashboard', 'Réglages TPLV', 'Réglages TPLV', 'manage_tplv_settings', 'tplv-reglages', 'tplv_render_reglages_page' );
 }
 
 /* ─────────────────────────────────────────────
@@ -64,8 +64,8 @@ function tplv_dashboard_cards(): array {
     // Voir le site public.
     $cards[] = [ 'title' => 'Voir le site', 'desc' => 'Ouvrir le site public', 'icon' => 'dashicons-external', 'url' => home_url( '/' ), 'blank' => true ];
 
-    // Raccourcis Réglages — administrateurs uniquement, ne s'affichent pas pour un profil bénévole.
-    if ( current_user_can( 'manage_options' ) ) {
+    // Raccourcis Réglages — administrateurs + Gestionnaire TPLV, ne s'affichent pas pour un profil bénévole.
+    if ( current_user_can( 'manage_tplv_settings' ) ) {
         $reglages = admin_url( 'admin.php?page=tplv-reglages' );
         $cards[] = [ 'title' => 'Modifier les chiffres clés', 'desc' => 'Bénévoles, participants, montants…', 'icon' => 'dashicons-chart-bar', 'url' => $reglages, 'blank' => false ];
         $cards[] = [ 'title' => 'Modifier les coordonnées',   'desc' => 'Email, téléphone, adresse',         'icon' => 'dashicons-location',  'url' => $reglages, 'blank' => false ];

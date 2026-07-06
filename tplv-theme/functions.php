@@ -22,4 +22,5 @@ require_once get_template_directory() . '/inc/apa.php';
 require_once get_template_directory() . '/inc/helloasso.php';
 require_once get_template_directory() . '/inc/seo-rgpd.php';
 require_once get_template_directory() . '/inc/reglages-tplv.php';
+require_once get_template_directory() . '/inc/roles-tplv.php';
 require_once get_template_directory() . '/inc/admin-tplv.php';

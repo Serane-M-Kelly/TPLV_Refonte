@@ -3,8 +3,10 @@
  * Réglages TPLV — page d'options + helper de lecture.
  *
  * - Stockage : une seule option `tplv_settings` (tableau associatif).
- * - Accès : administrateurs uniquement (manage_options).
- * - Aucune valeur n'est lue par le front à ce stade (câblage ultérieur).
+ * - Accès : administrateurs et rôle "Gestionnaire TPLV" (capacité `manage_tplv_settings`,
+ *   voir inc/roles-tplv.php — jamais manage_options pour cette page).
+ * - Valeurs lues par le front via tplv_opt() (front-page.php, footer.php, page-contact.php,
+ *   inc/seo-rgpd.php, inc/helloasso.php).
  *
  * Le helper tplv_opt() renvoie un fallback quand le champ est vide, afin que
  * le câblage futur des templates ne casse jamais l'affichage public.
@@ -93,6 +95,13 @@ function tplv_register_settings(): void {
         'sanitize_callback' => 'tplv_sanitize_settings',
         'default'           => [],
     ] );
+
+    // options.php vérifie sa propre capacité à la sauvegarde, indépendamment
+    // de la capacité du sous-menu : sans ce filtre, il retombe sur
+    // `manage_options` par défaut et bloquerait le rôle Gestionnaire TPLV.
+    add_filter( 'option_page_capability_tplv_settings_group', function () {
+        return 'manage_tplv_settings';
+    } );
 
     foreach ( tplv_settings_schema() as $section_id => $section ) {
         add_settings_section(
@@ -209,7 +218,7 @@ function tplv_sanitize_date( string $raw ): string {
  * ───────────────────────────────────────────── */
 
 function tplv_render_reglages_page(): void {
-    if ( ! current_user_can( 'manage_options' ) ) {
+    if ( ! current_user_can( 'manage_tplv_settings' ) ) {
         return;
     }
     ?>
