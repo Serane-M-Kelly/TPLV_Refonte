@@ -17,6 +17,7 @@ services:
     restart: always
     depends_on:
       - db
+      - mailpit
     ports:
       - "8080:80"
     environment:
@@ -31,6 +32,16 @@ services:
       - ./tplv-theme:/var/www/html/wp-content/themes/tplv-theme
       - wp_plugins:/var/www/html/wp-content/plugins
       - wp_uploads:/var/www/html/wp-content/uploads
+      # Local uniquement : redirige tous les emails sortants vers Mailpit au lieu
+      # d'un vrai serveur mail (absent de ce conteneur). N'existe pas sur o2switch
+      # (dossier hors du dépôt du thème), aucun effet en production.
+      - ./mu-plugins-local:/var/www/html/wp-content/mu-plugins
+
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: always
+    ports:
+      - "8025:8025"
 
   phpmyadmin:
     image: phpmyadmin:latest
