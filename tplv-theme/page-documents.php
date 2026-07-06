@@ -9,67 +9,53 @@
     </div>
   </div>
 
-  <!-- LISTE DE DOCUMENTS -->
+  <!-- LISTE DE DOCUMENTS — WP_Query CPT Documents -->
   <div class="section">
     <div class="container">
       <div class="docs-list-wrap">
-        <p class="section-sub" style="font-style:italic;margin-bottom:1.5rem">Documents et liens de téléchargement à compléter avec les fichiers officiels de l'association.</p>
         <div class="docs-list">
+          <?php
+          $documents = new WP_Query( [
+              'post_type'      => 'document',
+              'posts_per_page' => -1,
+              'orderby'        => 'menu_order',
+              'order'          => 'ASC',
+          ] );
 
-          <div class="doc-item fade-in">
-            <div class="doc-icon"><i data-lucide="clipboard-list"></i></div>
-            <div class="doc-info">
-              <h3>Programme édition 2025</h3>
-              <span>PDF · 2,4 Mo · Mis à jour le 1er mai 2025</span>
-            </div>
-            <div class="doc-btn"><a href="#" class="btn btn-outline" title="Lien à confirmer">Télécharger</a></div>
-          </div>
-
-          <div class="doc-item fade-in">
-            <div class="doc-icon"><i data-lucide="file-pen"></i></div>
-            <div class="doc-info">
-              <h3>Bulletin d'inscription bénévole 2025</h3>
-              <span>PDF · 340 Ko · Mis à jour le 15 avril 2025</span>
-            </div>
-            <div class="doc-btn"><a href="#" class="btn btn-outline" title="Lien à confirmer">Télécharger</a></div>
-          </div>
-
-          <div class="doc-item fade-in">
-            <div class="doc-icon"><i data-lucide="handshake"></i></div>
-            <div class="doc-info">
-              <h3>Dossier de partenariat 2025</h3>
-              <span>PDF · 5,8 Mo · Mis à jour le 10 janvier 2025</span>
-            </div>
-            <div class="doc-btn"><a href="#" class="btn btn-outline" title="Lien à confirmer">Télécharger</a></div>
-          </div>
-
-          <div class="doc-item fade-in">
-            <div class="doc-icon"><i data-lucide="palette"></i></div>
-            <div class="doc-info">
-              <h3>Affiche officielle TPLV 2025</h3>
-              <span>PDF haute résolution · 12 Mo · Format A3</span>
-            </div>
-            <div class="doc-btn"><a href="#" class="btn btn-outline" title="Lien à confirmer">Télécharger</a></div>
-          </div>
-
-          <div class="doc-item fade-in">
-            <div class="doc-icon"><i data-lucide="bar-chart"></i></div>
-            <div class="doc-info">
-              <h3>Bilan financier 2024</h3>
-              <span>PDF · 880 Ko · Approuvé en AG le 20 novembre 2024</span>
-            </div>
-            <div class="doc-btn"><a href="#" class="btn btn-outline" title="Lien à confirmer">Télécharger</a></div>
-          </div>
-
-          <div class="doc-item fade-in">
-            <div class="doc-icon"><i data-lucide="file-text"></i></div>
-            <div class="doc-info">
-              <h3>Statuts de l'association</h3>
-              <span>PDF · 220 Ko · Déposés en Préfecture d'Ille-et-Vilaine</span>
-            </div>
-            <div class="doc-btn"><a href="#" class="btn btn-outline" title="Lien à confirmer">Télécharger</a></div>
-          </div>
-
+          if ( $documents->have_posts() ) :
+              while ( $documents->have_posts() ) : $documents->the_post();
+                  $fichier_id = (int) get_post_meta( get_the_ID(), '_doc_fichier_id', true );
+                  $fichier_url = $fichier_id ? wp_get_attachment_url( $fichier_id ) : '';
+                  $icone       = get_post_meta( get_the_ID(), '_doc_icone', true ) ?: 'file-text';
+                  $taille      = '';
+                  if ( $fichier_id ) {
+                      $chemin = get_attached_file( $fichier_id );
+                      if ( $chemin && file_exists( $chemin ) ) {
+                          $taille = size_format( filesize( $chemin ) );
+                      }
+                  }
+                  ?>
+                  <div class="doc-item fade-in">
+                      <div class="doc-icon"><i data-lucide="<?php echo esc_attr( $icone ); ?>"></i></div>
+                      <div class="doc-info">
+                          <h3><?php the_title(); ?></h3>
+                          <?php if ( $fichier_id ) : ?>
+                              <span>PDF<?php echo $taille ? ' · ' . esc_html( $taille ) : ''; ?> · Mis à jour le <?php echo esc_html( get_the_modified_date( 'j F Y' ) ); ?></span>
+                          <?php endif; ?>
+                      </div>
+                      <div class="doc-btn">
+                          <?php if ( $fichier_url ) : ?>
+                              <a href="<?php echo esc_url( $fichier_url ); ?>" class="btn btn-outline" target="_blank" rel="noopener">Télécharger</a>
+                          <?php else : ?>
+                              <span class="btn btn-outline" style="opacity:.5" title="Fichier non disponible pour le moment">Bientôt disponible</span>
+                          <?php endif; ?>
+                      </div>
+                  </div>
+              <?php endwhile;
+              wp_reset_postdata();
+          else : ?>
+              <p class="section-sub" style="font-style:italic">Les documents seront bientôt disponibles.</p>
+          <?php endif; ?>
         </div>
       </div>
     </div>
